@@ -31,12 +31,12 @@ class FacebookPixelHook extends HookFactory
 
 		$form->addSubmit('save', 'form.save');
 
-		$form->onSuccess[] = [$this, 'mailchimpFormSucceeded'];
+		$form->onSuccess[] = [$this, 'facebookPixelFormSucceeded'];
 
 		return $form;
 	}
 
-	public function mailchimpFormSucceeded(Form $form, $values)
+	public function facebookPixelFormSucceeded(Form $form, $values)
 	{
 		$this->configurator->facebookPixelApiKey = $values->apiKey;
 
