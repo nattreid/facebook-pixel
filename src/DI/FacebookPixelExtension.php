@@ -32,11 +32,8 @@ class FacebookPixelExtension extends CompilerExtension
 
 		$hook = $builder->getByType(HookService::class);
 		if ($hook) {
-			$mcHook = $builder->addDefinition($this->prefix('facebookPixelHook'))
+			$builder->addDefinition($this->prefix('facebookPixelHook'))
 				->setClass(FacebookPixelHook::class);
-
-			$builder->getDefinition($hook)
-				->addSetup('addHook', [$mcHook]);
 
 			$this->setTranslation(__DIR__ . '/../lang/', [
 				'webManager'
