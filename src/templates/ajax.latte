@@ -1,0 +1,13 @@
+{if $apiKey}
+    {snippet ajaxEvents}
+        <script>
+            {foreach $ajaxEvents as $event => $values}
+                fbq('track', {$event}, {
+                {foreach $values as $variable => $value}
+                    {$variable|noescape}: {$value},
+                {/foreach}
+                });
+            {/foreach}
+        </script>
+    {/snippet}
+{/if}
