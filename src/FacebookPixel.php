@@ -3,6 +3,7 @@
 namespace NAttreid\FacebookPixel;
 
 use Nette\Application\UI\Control;
+use Nette\Http\IRequest;
 
 /**
  * Class FacebookPixelClient
@@ -21,13 +22,14 @@ class FacebookPixel extends Control
 	/** @var string[][] */
 	private $ajaxEvents = [];
 
-	/** @var string */
-	private $latte = 'default';
+	/** @var IRequest */
+	private $request;
 
-	public function __construct($apiKey)
+	public function __construct($apiKey, IRequest $request)
 	{
 		parent::__construct();
 		$this->apiKey = $apiKey;
+		$this->request = $request;
 	}
 
 	/**
@@ -76,7 +78,6 @@ class FacebookPixel extends Control
 
 		$this->ajaxEvents['AddToCart'] = $values;
 		$this->redrawControl('ajaxEvents');
-		$this->latte = 'ajax';
 	}
 
 	/**
@@ -96,7 +97,6 @@ class FacebookPixel extends Control
 
 		$this->ajaxEvents['AddToWishList'] = $values;
 		$this->redrawControl('ajaxEvents');
-		$this->latte = 'ajax';
 	}
 
 	/**
@@ -132,7 +132,6 @@ class FacebookPixel extends Control
 
 		$this->ajaxEvents['Purchase'] = $values;
 		$this->redrawControl('ajaxEvents');
-		$this->latte = 'ajax';
 	}
 
 	/**
@@ -153,17 +152,22 @@ class FacebookPixel extends Control
 
 	public function render()
 	{
-		$this->template->apiKey = $this->apiKey;
-		$this->template->events = $this->events;
-		$this->template->ajaxEvents = $this->ajaxEvents;
-		$this->template->setFile(__DIR__ . "/templates/$this->latte.latte");
-		$this->template->render();
+		if ($this->request->isAjax()) {
+			$this->renderAjax();
+		} else {
+			$this->template->apiKey = $this->apiKey;
+			$this->template->events = $this->events;
+			$this->template->setFile(__DIR__ . '/templates/default.latte');
+			$this->template->render();
+		}
 	}
 
 	public function renderAjax()
 	{
-		$this->latte = 'ajax';
-		$this->render();
+		$this->template->apiKey = $this->apiKey;
+		$this->template->ajaxEvents = $this->ajaxEvents;
+		$this->template->setFile(__DIR__ . '/templates/ajax.latte');
+		$this->template->render();
 	}
 }
 
