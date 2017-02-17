@@ -50,7 +50,7 @@ class FacebookPixel extends Control
 	{
 		$values = [];
 		if ($value !== null) {
-			$values['value'] = $value;
+			$values['value'] = number_format(floatval($value), 2);
 		}
 		if ($currency !== null) {
 			$values['currency'] = $currency;
@@ -68,7 +68,7 @@ class FacebookPixel extends Control
 	{
 		$values = [];
 		if ($value !== null) {
-			$values['value'] = $value;
+			$values['value'] = number_format(floatval($value), 2);
 		}
 		if ($currency !== null) {
 			$values['currency'] = $currency;
@@ -88,7 +88,7 @@ class FacebookPixel extends Control
 	{
 		$values = [];
 		if ($value !== null) {
-			$values['value'] = $value;
+			$values['value'] = number_format(floatval($value), 2);
 		}
 		if ($currency !== null) {
 			$values['currency'] = $currency;
@@ -124,7 +124,7 @@ class FacebookPixel extends Control
 	{
 		$values = [];
 		if ($value !== null) {
-			$values['value'] = $value;
+			$values['value'] = number_format(floatval($value), 2);
 		}
 		if ($currency !== null) {
 			$values['currency'] = $currency;
