@@ -11,7 +11,7 @@ facebookPixel:
 
 Použití
 ```php
-/** @var NAttreid\FacebookPixel\FacebookPixelFactory @inject */
+/** @var NAttreid\FacebookPixel\IFacebookPixelFactory @inject */
 public $facebookPixelFactory;
 
 protected function createComponentFacebookPixel() {
