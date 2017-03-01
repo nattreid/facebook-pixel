@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace NAttreid\FacebookPixel\Hooks;
 
 use NAttreid\Form\Form;
 use NAttreid\WebManager\Services\Hooks\HookFactory;
+use Nette\Utils\ArrayHash;
 
 /**
  * Class FacebookPixelHook
@@ -36,7 +39,7 @@ class FacebookPixelHook extends HookFactory
 		return $form;
 	}
 
-	public function facebookPixelFormSucceeded(Form $form, $values)
+	public function facebookPixelFormSucceeded(Form $form, ArrayHash $values)
 	{
 		$this->configurator->facebookPixelApiKey = $values->apiKey;
 

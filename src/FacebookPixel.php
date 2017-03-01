@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace NAttreid\FacebookPixel;
 
 use Nette\Application\UI\Control;
@@ -25,7 +27,7 @@ class FacebookPixel extends Control
 	/** @var IRequest */
 	private $request;
 
-	public function __construct($apiKey, IRequest $request)
+	public function __construct(string $apiKey, IRequest $request)
 	{
 		parent::__construct();
 		$this->apiKey = $apiKey;
@@ -36,7 +38,7 @@ class FacebookPixel extends Control
 	 * Search event
 	 * @param string $searchString
 	 */
-	public function search($searchString)
+	public function search(string $searchString)
 	{
 		$this->events['Search'] = [
 			'search_string' => $searchString
@@ -48,11 +50,11 @@ class FacebookPixel extends Control
 	 * @param float $value
 	 * @param string $currency
 	 */
-	public function viewContent($value = null, $currency = null)
+	public function viewContent(float $value = null, string $currency = null)
 	{
 		$values = [];
 		if ($value !== null) {
-			$values['value'] = floatval($value);
+			$values['value'] = $value;
 		}
 		if ($currency !== null) {
 			$values['currency'] = $currency;
@@ -66,11 +68,11 @@ class FacebookPixel extends Control
 	 * @param float $value
 	 * @param string $currency
 	 */
-	public function addToCart($value = null, $currency = null)
+	public function addToCart(float $value = null, string $currency = null)
 	{
 		$values = [];
 		if ($value !== null) {
-			$values['value'] = floatval($value);
+			$values['value'] = $value;
 		}
 		if ($currency !== null) {
 			$values['currency'] = $currency;
@@ -85,11 +87,11 @@ class FacebookPixel extends Control
 	 * @param float $value
 	 * @param string $currency
 	 */
-	public function addToWishList($value = null, $currency = null)
+	public function addToWishList(float $value = null, string $currency = null)
 	{
 		$values = [];
 		if ($value !== null) {
-			$values['value'] = floatval($value);
+			$values['value'] = $value;
 		}
 		if ($currency !== null) {
 			$values['currency'] = $currency;
@@ -120,11 +122,11 @@ class FacebookPixel extends Control
 	 * @param float $value
 	 * @param string $currency
 	 */
-	public function purchase($value = null, $currency = null)
+	public function purchase(float $value = null, string $currency = null)
 	{
 		$values = [];
 		if ($value !== null) {
-			$values['value'] = floatval($value);
+			$values['value'] = $value;
 		}
 		if ($currency !== null) {
 			$values['currency'] = $currency;
@@ -173,6 +175,5 @@ class FacebookPixel extends Control
 
 interface IFacebookPixelFactory
 {
-	/** @return FacebookPixel */
-	public function create();
+	public function create(): FacebookPixel;
 }
