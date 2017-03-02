@@ -24,7 +24,7 @@ class FacebookPixelHook extends HookFactory
 	}
 
 	/** @return Form */
-	public function create()
+	public function create(): Form
 	{
 		$form = $this->formFactory->create();
 		$form->setAjaxRequest();
