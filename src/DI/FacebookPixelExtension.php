@@ -5,7 +5,7 @@ declare(strict_types = 1);
 namespace NAttreid\FacebookPixel\DI;
 
 use NAttreid\Cms\Configurator\Configurator;
-use NAttreid\Cms\ExtensionTranslatorTrait;
+use NAttreid\Cms\DI\ExtensionTranslatorTrait;
 use NAttreid\FacebookPixel\FacebookPixel;
 use NAttreid\FacebookPixel\Hooks\FacebookPixelHook;
 use NAttreid\FacebookPixel\IFacebookPixelFactory;
