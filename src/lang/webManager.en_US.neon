@@ -2,4 +2,4 @@ web:
     hooks:
         facebookPixel:
             title: "FacebookPixel"
-            apiKey: "API key"
+            pixelId: "Facebook Pixel ID"

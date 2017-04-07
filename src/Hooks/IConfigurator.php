@@ -1,13 +1,13 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace NAttreid\FacebookPixel\Hooks;
 
 /**
  * Interface IConfigurator
  *
- * @property string $facebookPixelApiKey
+ * @property string[] $facebookPixelId
  *
  * @author Attreid <attreid@gmail.com>
  */

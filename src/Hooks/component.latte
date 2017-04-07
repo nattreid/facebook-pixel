@@ -1,0 +1,21 @@
+{form $name, class => 'form-horizontal'}
+    <div class="form-group" n:foreach="$form['pixelsId']->containers as $id => $pixelId">
+        <div class="col-sm-3 control-label">
+            {label pixelsId-$id-pixelId /}
+        </div>
+        <div class="col-sm-7">
+            {input pixelsId-$id-pixelId, class => 'form-control text'}
+            {input save, class => 'hidden'}
+        </div>
+        <div class="col-sm-2">
+            {input pixelsId-$id-remove, class => 'btn btn-danger button'}
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-3 control-label"></div>
+        <div class="col-sm-9">
+            {input pixelsId-add, class => 'btn btn-default button'}
+            {input save, class => 'btn btn-primary button'}
+        </div>
+    </div>
+{/form}

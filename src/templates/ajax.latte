@@ -1,7 +1,8 @@
-{if $apiKey}
-    {snippet ajaxEvents}
+{snippet ajaxEvents}
+    {foreach $pixelId as $id}
         <script>
             {foreach $ajaxEvents as $event => $values}
+                fbq('init', {$apiKey});
                 fbq('track', {$event}, {
                 {foreach $values as $variable => $value}
                     {$variable|noescape}: {$value},
@@ -9,5 +10,5 @@
                 });
             {/foreach}
         </script>
-    {/snippet}
-{/if}
+    {/foreach}
+{/snippet}

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace NAttreid\FacebookPixel\DI;
 
@@ -24,13 +24,18 @@ class FacebookPixelExtension extends CompilerExtension
 	use ExtensionTranslatorTrait;
 
 	private $defaults = [
-		'apiKey' => null
+		'pixelId' => null
 	];
 
 	public function loadConfiguration()
 	{
 		$builder = $this->getContainerBuilder();
 		$config = $this->validateConfig($this->defaults, $this->getConfig());
+
+		$pixelId = $config['pixelId'];
+		if ($pixelId !== null && !is_array($pixelId)) {
+			$pixelId = [$pixelId];
+		}
 
 		$hook = $builder->getByType(HookService::class);
 		if ($hook) {
@@ -41,16 +46,16 @@ class FacebookPixelExtension extends CompilerExtension
 				'webManager'
 			]);
 
-			$config['apiKey'] = new Statement('?->facebookPixelApiKey', ['@' . Configurator::class]);
+			$pixelId = new Statement('?->facebookPixelId', ['@' . Configurator::class]);
 		}
 
-		if ($config['apiKey'] === null) {
-			throw new InvalidStateException("FacebookPixel: 'apiKey' does not set in config.neon");
+		if ($pixelId === null) {
+			throw new InvalidStateException("FacebookPixel: 'pixelId' does not set in config.neon");
 		}
 
 		$builder->addDefinition($this->prefix('factory'))
 			->setImplement(IFacebookPixelFactory::class)
 			->setFactory(FacebookPixel::class)
-			->setArguments([$config['apiKey']]);
+			->setArguments([$pixelId]);
 	}
 }

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace NAttreid\FacebookPixel;
 
@@ -15,8 +15,8 @@ use Nette\Http\IRequest;
 class FacebookPixel extends Control
 {
 
-	/** @var string */
-	private $apiKey;
+	/** @var string[] */
+	private $pixelId;
 
 	/** @var string[][] */
 	private $events = [];
@@ -27,10 +27,10 @@ class FacebookPixel extends Control
 	/** @var IRequest */
 	private $request;
 
-	public function __construct(string $apiKey, IRequest $request)
+	public function __construct(array $pixelId, IRequest $request)
 	{
 		parent::__construct();
-		$this->apiKey = $apiKey;
+		$this->pixelId = $pixelId;
 		$this->request = $request;
 	}
 
@@ -157,7 +157,7 @@ class FacebookPixel extends Control
 		if ($this->request->isAjax()) {
 			$this->renderAjax();
 		} else {
-			$this->template->apiKey = $this->apiKey;
+			$this->template->pixelId = $this->pixelId;
 			$this->template->events = $this->events;
 			$this->template->setFile(__DIR__ . '/templates/default.latte');
 			$this->template->render();
@@ -166,7 +166,7 @@ class FacebookPixel extends Control
 
 	public function renderAjax()
 	{
-		$this->template->apiKey = $this->apiKey;
+		$this->template->pixelId = $this->pixelId;
 		$this->template->ajaxEvents = $this->ajaxEvents;
 		$this->template->setFile(__DIR__ . '/templates/ajax.latte');
 		$this->template->render();

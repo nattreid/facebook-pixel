@@ -1,12 +1,14 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace NAttreid\FacebookPixel\Hooks;
 
 use NAttreid\Form\Form;
 use NAttreid\WebManager\Services\Hooks\HookFactory;
-use Nette\Utils\ArrayHash;
+use Nette\ComponentModel\Component;
+use Nette\Forms\Container;
+use Nette\Forms\Controls\SubmitButton;
 
 /**
  * Class FacebookPixelHook
@@ -21,28 +23,72 @@ class FacebookPixelHook extends HookFactory
 	public function init()
 	{
 		$this->latte = __DIR__ . '/facebookPixelHook.latte';
+		$this->component = __DIR__ . '/component.latte';
 	}
 
-	/** @return Form */
-	public function create(): Form
+	/** @return Component */
+	public function create(): Component
 	{
 		$form = $this->formFactory->create();
-		$form->setAjaxRequest();
 
-		$form->addText('apiKey', 'webManager.web.hooks.facebookPixel.apiKey')
-			->setDefaultValue($this->configurator->facebookPixelApiKey);
+		$pixels = $form->addDynamic('pixelsId', function (Container $container) {
+			$container->addText('pixelId', 'webManager.web.hooks.facebookPixel.pixelId');
+			$container->addSubmit('remove', 'default.delete')
+				->setValidationScope(FALSE)
+				->onClick[] = [$this, 'removePixel'];
+		});
 
-		$form->addSubmit('save', 'form.save');
+		$pixels->addSubmit('add', 'default.add')
+			->setValidationScope(FALSE)
+			->onClick[] = [$this, 'addPixel'];
 
-		$form->onSuccess[] = [$this, 'facebookPixelFormSucceeded'];
+		$this->setDefaults($form);
+
+		$form->addSubmit('save', 'form.save')
+			->onClick[] = [$this, 'facebookPixelFormSucceeded'];
 
 		return $form;
 	}
 
-	public function facebookPixelFormSucceeded(Form $form, ArrayHash $values)
+	public function facebookPixelFormSucceeded(SubmitButton $button)
 	{
-		$this->configurator->facebookPixelApiKey = $values->apiKey;
+		$arr = [];
+		foreach ($button->form['pixelsId']->values as $values) {
+			$arr[] = $values->pixelId;
+		}
+		$this->configurator->facebookPixelId = $arr;
 
 		$this->flashNotifier->success('default.dataSaved');
+	}
+
+	public function removePixel(SubmitButton $button)
+	{
+		$id = $button->parent->name;
+		$arr = $this->configurator->facebookPixelId;
+		unset($arr[$id]);
+		$this->configurator->facebookPixelId = $arr;
+
+		$this->onDataChange();
+	}
+
+	public function addPixel(SubmitButton $button)
+	{
+		/* @var $pixelsId \Kdyby\Replicator\Container */
+		$pixelsId = $button->parent;
+
+		if ($pixelsId->isAllFilled()) {
+			$pixelsId->createOne();
+		}
+	}
+
+	private function setDefaults(Form $form)
+	{
+		if ($this->configurator->facebookPixelId) {
+			foreach ($this->configurator->facebookPixelId as $key => $id) {
+				$form['pixelsId'][$key]->setDefaults([
+					'pixelId' => $id
+				]);
+			}
+		}
 	}
 }
