@@ -13,6 +13,7 @@ use NAttreid\WebManager\Services\Hooks\HookService;
 use Nette\DI\CompilerExtension;
 use Nette\DI\Statement;
 use Nette\InvalidStateException;
+use Tracy\Debugger;
 
 /**
  * Class FacebookPixelExtension
@@ -46,7 +47,7 @@ class FacebookPixelExtension extends CompilerExtension
 				'webManager'
 			]);
 
-			$pixelId = new Statement('?->facebookPixelId', ['@' . Configurator::class]);
+			$pixelId = new Statement('?->facebookPixelId \?: []', ['@' . Configurator::class]);
 		}
 
 		if ($pixelId === null) {
