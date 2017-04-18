@@ -46,7 +46,7 @@ class FacebookPixelExtension extends CompilerExtension
 				'webManager'
 			]);
 
-			$pixelId = new Statement('?->facebookPixelId', ['@' . Configurator::class]);
+			$pixelId = new Statement('?->facebookPixelId \?: []', ['@' . Configurator::class]);
 		}
 
 		if ($pixelId === null) {
