@@ -38,7 +38,7 @@ class FacebookPixel extends Control
 	 * Search event
 	 * @param string $searchString
 	 */
-	public function search(string $searchString)
+	public function search(string $searchString): void
 	{
 		$this->events['Search'] = [
 			'search_string' => $searchString
@@ -50,7 +50,7 @@ class FacebookPixel extends Control
 	 * @param float $value
 	 * @param string $currency
 	 */
-	public function viewContent(float $value = null, string $currency = null)
+	public function viewContent(float $value = null, string $currency = null): void
 	{
 		$values = [];
 		if ($value !== null) {
@@ -68,7 +68,7 @@ class FacebookPixel extends Control
 	 * @param float $value
 	 * @param string $currency
 	 */
-	public function addToCart(float $value = null, string $currency = null)
+	public function addToCart(float $value = null, string $currency = null): void
 	{
 		$values = [];
 		if ($value !== null) {
@@ -87,7 +87,7 @@ class FacebookPixel extends Control
 	 * @param float $value
 	 * @param string $currency
 	 */
-	public function addToWishList(float $value = null, string $currency = null)
+	public function addToWishList(float $value = null, string $currency = null): void
 	{
 		$values = [];
 		if ($value !== null) {
@@ -104,7 +104,7 @@ class FacebookPixel extends Control
 	/**
 	 * Initiate Checkout event
 	 */
-	public function initiateCheckout()
+	public function initiateCheckout(): void
 	{
 		$this->events['InitiateCheckout'] = [];
 	}
@@ -112,7 +112,7 @@ class FacebookPixel extends Control
 	/**
 	 * Add Payment Info event
 	 */
-	public function addPaymentInfo()
+	public function addPaymentInfo(): void
 	{
 		$this->events['AddPaymentInfo'] = [];
 	}
@@ -122,7 +122,7 @@ class FacebookPixel extends Control
 	 * @param float $value
 	 * @param string $currency
 	 */
-	public function purchase(float $value = null, string $currency = null)
+	public function purchase(float $value = null, string $currency = null): void
 	{
 		$values = [];
 		if ($value !== null) {
@@ -139,7 +139,7 @@ class FacebookPixel extends Control
 	/**
 	 * Lead event (customer)
 	 */
-	public function lead()
+	public function lead(): void
 	{
 		$this->events['Lead'] = [];
 	}
@@ -147,12 +147,12 @@ class FacebookPixel extends Control
 	/**
 	 * Complete Registration event (customer)
 	 */
-	public function completeRegistration()
+	public function completeRegistration(): void
 	{
 		$this->events['CompleteRegistration'] = [];
 	}
 
-	public function render()
+	public function render(): void
 	{
 		if ($this->request->isAjax()) {
 			$this->renderAjax();
@@ -164,7 +164,7 @@ class FacebookPixel extends Control
 		}
 	}
 
-	public function renderAjax()
+	public function renderAjax(): void
 	{
 		$this->template->pixelId = $this->pixelId;
 		$this->template->ajaxEvents = $this->ajaxEvents;

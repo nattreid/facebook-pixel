@@ -13,7 +13,6 @@ use NAttreid\WebManager\Services\Hooks\HookService;
 use Nette\DI\CompilerExtension;
 use Nette\DI\Statement;
 use Nette\InvalidStateException;
-use Tracy\Debugger;
 
 /**
  * Class FacebookPixelExtension
@@ -28,7 +27,7 @@ class FacebookPixelExtension extends CompilerExtension
 		'pixelId' => null
 	];
 
-	public function loadConfiguration()
+	public function loadConfiguration(): void
 	{
 		$builder = $this->getContainerBuilder();
 		$config = $this->validateConfig($this->defaults, $this->getConfig());

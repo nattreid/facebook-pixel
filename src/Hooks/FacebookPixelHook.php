@@ -20,7 +20,7 @@ class FacebookPixelHook extends HookFactory
 	/** @var IConfigurator */
 	protected $configurator;
 
-	public function init()
+	public function init(): void
 	{
 		$this->latte = __DIR__ . '/facebookPixelHook.latte';
 		$this->component = __DIR__ . '/component.latte';
@@ -50,7 +50,7 @@ class FacebookPixelHook extends HookFactory
 		return $form;
 	}
 
-	public function facebookPixelFormSucceeded(SubmitButton $button)
+	public function facebookPixelFormSucceeded(SubmitButton $button): void
 	{
 		$arr = [];
 		foreach ($button->form['pixelsId']->values as $values) {
@@ -61,7 +61,7 @@ class FacebookPixelHook extends HookFactory
 		$this->flashNotifier->success('default.dataSaved');
 	}
 
-	public function removePixel(SubmitButton $button)
+	public function removePixel(SubmitButton $button): void
 	{
 		$id = $button->parent->name;
 		$arr = $this->configurator->facebookPixelId;
@@ -71,7 +71,7 @@ class FacebookPixelHook extends HookFactory
 		$this->onDataChange();
 	}
 
-	public function addPixel(SubmitButton $button)
+	public function addPixel(SubmitButton $button): void
 	{
 		/* @var $pixelsId \Kdyby\Replicator\Container */
 		$pixelsId = $button->parent;
@@ -81,7 +81,7 @@ class FacebookPixelHook extends HookFactory
 		}
 	}
 
-	private function setDefaults(Form $form)
+	private function setDefaults(Form $form): void
 	{
 		if ($this->configurator->facebookPixelId) {
 			foreach ($this->configurator->facebookPixelId as $key => $id) {
