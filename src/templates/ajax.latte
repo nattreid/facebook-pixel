@@ -2,7 +2,7 @@
     {foreach $pixelId as $id}
         <script>
             {foreach $ajaxEvents as $event => $values}
-                fbq('init', {$apiKey});
+                fbq('init', {$id});
                 fbq('track', {$event}, {
                 {foreach $values as $variable => $value}
                     {$variable|noescape}: {$value},
