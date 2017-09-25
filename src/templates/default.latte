@@ -8,9 +8,9 @@
             document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
         fbq('init', {$id});
         fbq('track', 'PageView');
-        {foreach $events as $event => $values}
-            fbq('track', {$event}, {
-                {foreach $values as $variable => $value}
+        {foreach $events as $event}
+            fbq('track', {$event->name}, {
+                {foreach $event->items as $variable => $value}
                     {$variable|noescape}: {$value},
                 {/foreach}
             });

@@ -43,7 +43,7 @@ abstract class ContentEvent extends Event
 		$obj = new stdClass;
 		$obj->id = $id;
 		$obj->quantity = $quantity;
-		$obj->id = $itemPrice;
+		$obj->item_price = $itemPrice;
 
 		$this->values['contents'][] = $obj;
 		return $this;

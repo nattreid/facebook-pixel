@@ -10,7 +10,7 @@ use ReflectionClass;
 /**
  * Class Event
  *
- * @property-read array $item;
+ * @property-read array $items;
  * @property-read string $name;
  *
  * @author Attreid <attreid@gmail.com>
@@ -46,7 +46,6 @@ abstract class Event
 
 	protected function check()
 	{
-
 	}
 
 	protected function getItems(): array

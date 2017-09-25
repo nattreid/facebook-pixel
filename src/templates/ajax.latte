@@ -1,11 +1,11 @@
 {snippet ajaxEvents}
     {foreach $pixelId as $id}
         <script>
-            {foreach $ajaxEvents as $event => $values}
-                fbq('track', {$event}, {
-                {foreach $values as $variable => $value}
-                    {$variable|noescape}: {$value},
-                {/foreach}
+            {foreach $ajaxEvents as $event}
+                fbq('track', {$event->name}, {
+                    {foreach $event->items as $variable => $value}
+                        {$variable|noescape}: {$value},
+                    {/foreach}
                 });
             {/foreach}
         </script>
