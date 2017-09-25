@@ -4,6 +4,15 @@ declare(strict_types=1);
 
 namespace NAttreid\FacebookPixel;
 
+use NAttreid\FacebookPixel\Events\AddPaymentInfo;
+use NAttreid\FacebookPixel\Events\AddToCart;
+use NAttreid\FacebookPixel\Events\AddToWishlist;
+use NAttreid\FacebookPixel\Events\CompleteRegistration;
+use NAttreid\FacebookPixel\Events\InitiateCheckout;
+use NAttreid\FacebookPixel\Events\Lead;
+use NAttreid\FacebookPixel\Events\Purchase;
+use NAttreid\FacebookPixel\Events\Search;
+use NAttreid\FacebookPixel\Events\ViewContent;
 use Nette\Application\UI\Control;
 use Nette\Http\IRequest;
 
@@ -36,120 +45,86 @@ class FacebookPixel extends Control
 
 	/**
 	 * Search event
-	 * @param string $searchString
+	 * @return Search
 	 */
-	public function search(string $searchString): void
+	public function search(): Search
 	{
-		$this->events['Search'] = [
-			'search_string' => $searchString
-		];
+		return $this->events[] = new Search();
 	}
 
 	/**
 	 * View Content (Detail) event
-	 * @param float $value
-	 * @param string $currency
+	 * @return ViewContent
 	 */
-	public function viewContent(float $value = null, string $currency = null): void
+	public function viewContent(): ViewContent
 	{
-		$values = [];
-		if ($value !== null) {
-			$values['value'] = $value;
-		}
-		if ($currency !== null) {
-			$values['currency'] = $currency;
-		}
-
-		$this->events['ViewContent'] = $values;
+		return $this->events[] = new ViewContent();
 	}
 
 	/**
 	 * Add to Cart event
-	 * @param float $value
-	 * @param string $currency
+	 * @return AddToCart
 	 */
-	public function addToCart(float $value = null, string $currency = null): void
+	public function addToCart(): AddToCart
 	{
-		$values = [];
-		if ($value !== null) {
-			$values['value'] = $value;
-		}
-		if ($currency !== null) {
-			$values['currency'] = $currency;
-		}
-
-		$this->ajaxEvents['AddToCart'] = $values;
 		$this->redrawControl('ajaxEvents');
+		return $this->ajaxEvents[] = new AddToCart();
 	}
 
 	/**
 	 * Add to Wish List event
-	 * @param float $value
-	 * @param string $currency
+	 * @return AddToWishlist
 	 */
-	public function addToWishList(float $value = null, string $currency = null): void
+	public function addToWishList(): AddToWishlist
 	{
-		$values = [];
-		if ($value !== null) {
-			$values['value'] = $value;
-		}
-		if ($currency !== null) {
-			$values['currency'] = $currency;
-		}
-
-		$this->ajaxEvents['AddToWishList'] = $values;
 		$this->redrawControl('ajaxEvents');
+		return $this->ajaxEvents[] = new AddToWishlist();
 	}
 
 	/**
 	 * Initiate Checkout event
+	 * @return InitiateCheckout
 	 */
-	public function initiateCheckout(): void
+	public function initiateCheckout(): InitiateCheckout
 	{
-		$this->events['InitiateCheckout'] = [];
+		return $this->events[] = new InitiateCheckout();
 	}
 
 	/**
 	 * Add Payment Info event
+	 * @return AddPaymentInfo
 	 */
-	public function addPaymentInfo(): void
+	public function addPaymentInfo(): AddPaymentInfo
 	{
-		$this->events['AddPaymentInfo'] = [];
+		return $this->events[] = new AddPaymentInfo();
 	}
 
 	/**
 	 * Purchase event
-	 * @param float $value
-	 * @param string $currency
+	 * @return Purchase
 	 */
-	public function purchase(float $value = null, string $currency = null): void
+	public function purchase(): Purchase
 	{
-		$values = [];
-		if ($value !== null) {
-			$values['value'] = $value;
-		}
-		if ($currency !== null) {
-			$values['currency'] = $currency;
-		}
-
-		$this->ajaxEvents['Purchase'] = $values;
 		$this->redrawControl('ajaxEvents');
+		return $this->ajaxEvents[] = new Purchase();
 	}
 
 	/**
 	 * Lead event (customer)
+	 * @return Lead
 	 */
-	public function lead(): void
+	public function lead(): Lead
 	{
-		$this->events['Lead'] = [];
+		return $this->events[] = new Lead();
 	}
 
 	/**
 	 * Complete Registration event (customer)
+	 * @return CompleteRegistration
 	 */
-	public function completeRegistration(): void
+	public function completeRegistration(): CompleteRegistration
 	{
-		$this->events['CompleteRegistration'] = [];
+		return $this->events[] = new CompleteRegistration();
 	}
 
 	public function render(): void
