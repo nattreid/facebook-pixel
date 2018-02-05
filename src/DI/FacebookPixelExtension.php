@@ -6,56 +6,35 @@ namespace NAttreid\FacebookPixel\DI;
 
 use NAttreid\Cms\Configurator\Configurator;
 use NAttreid\Cms\DI\ExtensionTranslatorTrait;
-use NAttreid\FacebookPixel\FacebookPixel;
 use NAttreid\FacebookPixel\Hooks\FacebookPixelHook;
-use NAttreid\FacebookPixel\IFacebookPixelFactory;
 use NAttreid\WebManager\Services\Hooks\HookService;
-use Nette\DI\CompilerExtension;
 use Nette\DI\Statement;
-use Nette\InvalidStateException;
 
-/**
- * Class FacebookPixelExtension
- *
- * @author Attreid <attreid@gmail.com>
- */
-class FacebookPixelExtension extends CompilerExtension
-{
-	use ExtensionTranslatorTrait;
-
-	private $defaults = [
-		'pixelId' => null
-	];
-
-	public function loadConfiguration(): void
+if (trait_exists('NAttreid\Cms\DI\ExtensionTranslatorTrait')) {
+	class FacebookPixelExtension extends AbstractFacebookPixelExtension
 	{
-		$builder = $this->getContainerBuilder();
-		$config = $this->validateConfig($this->defaults, $this->getConfig());
+		use ExtensionTranslatorTrait;
 
-		$pixelId = $config['pixelId'];
-		if ($pixelId !== null && !is_array($pixelId)) {
-			$pixelId = [$pixelId];
+		protected function prepareHook($pixelId)
+		{
+			$builder = $this->getContainerBuilder();
+			$hook = $builder->getByType(HookService::class);
+			if ($hook) {
+				$builder->addDefinition($this->prefix('facebookPixelHook'))
+					->setType(FacebookPixelHook::class);
+
+				$this->setTranslation(__DIR__ . '/../lang/', [
+					'webManager'
+				]);
+
+				return new Statement('?->facebookPixelId \?: []', ['@' . Configurator::class]);
+			} else {
+				return parent::prepareHook($pixelId);
+			}
 		}
-
-		$hook = $builder->getByType(HookService::class);
-		if ($hook) {
-			$builder->addDefinition($this->prefix('facebookPixelHook'))
-				->setType(FacebookPixelHook::class);
-
-			$this->setTranslation(__DIR__ . '/../lang/', [
-				'webManager'
-			]);
-
-			$pixelId = new Statement('?->facebookPixelId \?: []', ['@' . Configurator::class]);
-		}
-
-		if ($pixelId === null) {
-			throw new InvalidStateException("FacebookPixel: 'pixelId' does not set in config.neon");
-		}
-
-		$builder->addDefinition($this->prefix('factory'))
-			->setImplement(IFacebookPixelFactory::class)
-			->setFactory(FacebookPixel::class)
-			->setArguments([$pixelId]);
+	}
+} else {
+	class FacebookPixelExtension extends AbstractFacebookPixelExtension
+	{
 	}
 }
