@@ -21,8 +21,6 @@ use Nette\InvalidStateException;
  */
 abstract class AbstractFacebookPixelExtension extends CompilerExtension
 {
-	use ExtensionTranslatorTrait;
-
 	private $defaults = [
 		'pixelId' => null
 	];
