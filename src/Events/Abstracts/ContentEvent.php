@@ -31,8 +31,8 @@ abstract class ContentEvent extends Event
 	/**
 	 * Add Content
 	 * @param string $id
-	 * @param float $price
-	 * @param int $count
+	 * @param float $itemPrice
+	 * @param int $quantity
 	 * @return static
 	 */
 	public function addContent(string $id, float $itemPrice, int $quantity)
