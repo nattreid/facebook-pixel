@@ -9,6 +9,7 @@ use NAttreid\WebManager\Services\Hooks\HookFactory;
 use Nette\ComponentModel\Component;
 use Nette\Forms\Container;
 use Nette\Forms\Controls\SubmitButton;
+use Tracy\Debugger;
 
 /**
  * Class FacebookPixelHook
@@ -31,16 +32,12 @@ class FacebookPixelHook extends HookFactory
 	{
 		$form = $this->formFactory->create();
 
-		$pixels = $form->addDynamic('pixelsId', function (Container $container) {
+		$pixels = $form->addMultiplier('pixelsId', function (Container $container) {
 			$container->addText('pixelId', 'webManager.web.hooks.facebookPixel.pixelId');
-			$container->addSubmit('remove', 'default.delete')
-				->setValidationScope(FALSE)
-				->onClick[] = [$this, 'removePixel'];
 		});
 
-		$pixels->addSubmit('add', 'default.add')
-			->setValidationScope(FALSE)
-			->onClick[] = [$this, 'addPixel'];
+		$pixels->addCreateButton('default.add');
+		$pixels->addRemoveButton('default.delete');
 
 		$this->setDefaults($form);
 
@@ -61,34 +58,16 @@ class FacebookPixelHook extends HookFactory
 		$this->flashNotifier->success('default.dataSaved');
 	}
 
-	public function removePixel(SubmitButton $button): void
-	{
-		$id = $button->parent->name;
-		$arr = $this->configurator->facebookPixelId;
-		unset($arr[$id]);
-		$this->configurator->facebookPixelId = $arr;
-
-		$this->onDataChange();
-	}
-
-	public function addPixel(SubmitButton $button): void
-	{
-		/* @var $pixelsId \Kdyby\Replicator\Container */
-		$pixelsId = $button->parent;
-
-		if ($pixelsId->isAllFilled()) {
-			$pixelsId->createOne();
-		}
-	}
-
 	private function setDefaults(Form $form): void
 	{
 		if ($this->configurator->facebookPixelId) {
-			foreach ($this->configurator->facebookPixelId as $key => $id) {
-				$form['pixelsId'][$key]->setDefaults([
-					'pixelId' => $id
-				]);
+			$defaults = [];
+			foreach ($this->configurator->facebookPixelId as $pixelId) {
+				$defaults[] = [
+					'pixelId' => $pixelId
+				];
 			}
+			$form['pixelsId']->setDefaults($defaults);
 		}
 	}
 }
