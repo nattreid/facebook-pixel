@@ -35,7 +35,7 @@ abstract class AbstractFacebookPixelExtension extends CompilerExtension
 			$pixelId = [$pixelId];
 		}
 
-		$pixelId = $this->prepareHook($pixelId);
+		$pixelId = $this->prepareConfig($pixelId);
 
 		if ($pixelId === null) {
 			throw new InvalidStateException("FacebookPixel: 'pixelId' does not set in config.neon");
@@ -47,7 +47,7 @@ abstract class AbstractFacebookPixelExtension extends CompilerExtension
 			->setArguments([$pixelId]);
 	}
 
-	protected function prepareHook($pixelId)
+	protected function prepareConfig($pixelId)
 	{
 		return $pixelId;
 	}
