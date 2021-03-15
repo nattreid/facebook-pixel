@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace NAttreid\FacebookPixel;
 
+use Nette\InvalidArgumentException;
 use NAttreid\FacebookPixel\Events\AddPaymentInfo;
 use NAttreid\FacebookPixel\Events\AddToCart;
 use NAttreid\FacebookPixel\Events\AddToWishlist;
@@ -35,6 +36,9 @@ class FacebookPixel extends Control
 
 	/** @var IRequest */
 	private $request;
+
+	/** @var int|null */
+	private $pixelKey;
 
 	public function __construct(array $pixelId, IRequest $request)
 	{
@@ -119,6 +123,28 @@ class FacebookPixel extends Control
 	}
 
 	/**
+	 * Return pixelsId array
+	 * @return string[]
+	 */
+	public function getPixelList(): array
+	{
+		return $this->pixelId;
+	}
+
+	/**
+	 * Select pixelId
+	 * @param int $key key of pixelId list
+	 * @throws InvalidArgumentException
+	 */
+	public function usePixelId(int $key): void
+	{
+		if (!isset($this->pixelId[$key])) {
+			throw new InvalidArgumentException();
+		}
+		$this->pixelKey = $key;
+	}
+
+	/**
 	 * Complete Registration event (customer)
 	 * @return CompleteRegistration
 	 */
@@ -127,12 +153,21 @@ class FacebookPixel extends Control
 		return $this->events[] = new CompleteRegistration();
 	}
 
+	private function getPixels(): array
+	{
+		if ($this->pixelKey) {
+			return [$this->pixelId[$this->pixelKey]];
+		} else {
+			return $this->pixelId;
+		}
+	}
+
 	public function render(): void
 	{
 		if ($this->request->isAjax()) {
 			$this->renderAjax();
 		} else {
-			$this->template->pixelId = $this->pixelId;
+			$this->template->pixelId = $this->getPixels();
 			$this->template->events = $this->events;
 			$this->template->setFile(__DIR__ . '/templates/default.latte');
 			$this->template->render();
@@ -141,7 +176,7 @@ class FacebookPixel extends Control
 
 	public function renderAjax(): void
 	{
-		$this->template->pixelId = $this->pixelId;
+		$this->template->pixelId = $this->getPixels();
 		$this->template->ajaxEvents = $this->ajaxEvents;
 		$this->template->setFile(__DIR__ . '/templates/ajax.latte');
 		$this->template->render();
