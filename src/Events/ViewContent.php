@@ -22,7 +22,7 @@ class ViewContent extends ContentEvent
 	 * Set type to 'product_type' (default is 'product')
 	 * @return static
 	 */
-	public function setTypeProductGroup()
+	public function setTypeProductGroup(): self
 	{
 		$this->values['content_type'] = 'product_group';
 		return $this;
@@ -32,7 +32,7 @@ class ViewContent extends ContentEvent
 	 * @param string $name
 	 * @return static
 	 */
-	public function setContentName(string $name)
+	public function setContentName(string $name): self
 	{
 		$this->values['content_name'] = $name;
 		return $this;

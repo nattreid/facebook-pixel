@@ -1,21 +1,33 @@
 {form $name, class => 'form-horizontal'}
-    <div class="form-group" n:foreach="$form['pixelsId']->containers as $id => $pixelId">
-        <div class="col-sm-3 control-label">
-            {label pixelsId-$id-pixelId /}
-        </div>
-        <div class="col-sm-7">
-            {input pixelsId-$id-pixelId, class => 'form-control text'}
+	{foreach $form['facebookPixel']->containers as $id => $row}
+		<div class="form-group">
+			<div class="col-sm-3 control-label">
+				{label facebookPixel-$id-pixelId /}
+			</div>
+			<div class="col-sm-7">
+				{input facebookPixel-$id-pixelId, class => 'form-control text'}
+          	    {input save, class => 'hidden'}
+			</div>
+			<div class="col-sm-2"></div>
+		</div>
+		<div class="form-group">
+			<div class="col-sm-3 control-label">
+				{label facebookPixel-$id-accessToken /}
+			</div>
+			<div class="col-sm-7">
+				{input facebookPixel-$id-accessToken, class => 'form-control text'}
             {input save, class => 'hidden'}
-        </div>
-        <div class="col-sm-2">
-            {input pixelsId-$id-remove, class => 'btn btn-danger button'}
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="col-sm-3 control-label"></div>
-        <div class="col-sm-9">
-            {input pixelsId-add, class => 'btn btn-default button'}
+			</div>
+			<div class="col-sm-2">
+				{input facebookPixel-$id-remove, class => 'btn btn-danger button'}
+			</div>
+		</div>
+	{/foreach}
+	<div class="form-group">
+		<div class="col-sm-3 control-label"></div>
+		<div class="col-sm-9">
+			{input facebookPixel-add, class => 'btn btn-default button'}
             {input save, class => 'btn btn-primary button'}
-        </div>
-    </div>
+		</div>
+	</div>
 {/form}

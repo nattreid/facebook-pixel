@@ -3,3 +3,4 @@ web:
         facebookPixel:
             title: "FacebookPixel"
             pixelId: "Facebook Pixel ID"
+            accessToken: "Access - Token"

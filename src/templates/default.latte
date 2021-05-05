@@ -5,8 +5,8 @@
         n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
         t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
         document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
-    {foreach $pixelId as $id}
-        fbq('init', {$id});
+    {foreach $config as $row}
+        fbq('init', {$row->pixelId});
     {/foreach}
     fbq('track', 'PageView');
     {foreach $events as $event}
@@ -14,11 +14,17 @@
             {foreach $event->items as $variable => $value}
                 {$variable|noescape}: {$value},
             {/foreach}
+        }, {
+            eventID: {$event->eventId}
         });
     {/foreach}
 </script>
-{foreach $pixelId as $id}
-    <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id={$id|noescape}&ev=PageView&noscript=1"/></noscript>
+{foreach $config as $row}
+    <noscript>
+        <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id={$row->pixelId|noescape}&ev=PageView&noscript=1"/>
+        {foreach $events as $event}
+            <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id={$row->pixelId|noescape}&ev={$event->name}&eid={$event->eventId}&noscript=1"/>
+        {/foreach}
+    </noscript>
 {/foreach}
-<!-- DO NOT MODIFY -->
 <!-- End Facebook Pixel Code -->

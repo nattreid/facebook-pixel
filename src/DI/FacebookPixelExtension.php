@@ -15,7 +15,7 @@ if (trait_exists('NAttreid\Cms\DI\ExtensionTranslatorTrait')) {
 	{
 		use ExtensionTranslatorTrait;
 
-		protected function prepareConfig($pixelId)
+		protected function prepareConfig(array $configs)
 		{
 			$builder = $this->getContainerBuilder();
 			$hook = $builder->getByType(HookService::class);
@@ -27,9 +27,9 @@ if (trait_exists('NAttreid\Cms\DI\ExtensionTranslatorTrait')) {
 					'webManager'
 				]);
 
-				return new Statement('?->facebookPixelId \?: []', ['@' . Configurator::class]);
+				return new Statement('?->facebookPixel \?: []', ['@' . Configurator::class]);
 			} else {
-				return parent::prepareConfig($pixelId);
+				return parent::prepareConfig($configs);
 			}
 		}
 	}

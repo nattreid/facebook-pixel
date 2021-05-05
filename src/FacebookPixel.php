@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace NAttreid\FacebookPixel;
 
-use Nette\InvalidArgumentException;
+use FacebookAds\Api;
+use FacebookAds\Logger\CurlLogger;
+use FacebookAds\Object\ServerSide\EventRequest;
+use NAttreid\FacebookPixel\Events\Abstracts\Event;
 use NAttreid\FacebookPixel\Events\AddPaymentInfo;
 use NAttreid\FacebookPixel\Events\AddToCart;
 use NAttreid\FacebookPixel\Events\AddToWishlist;
@@ -14,8 +17,10 @@ use NAttreid\FacebookPixel\Events\Lead;
 use NAttreid\FacebookPixel\Events\Purchase;
 use NAttreid\FacebookPixel\Events\Search;
 use NAttreid\FacebookPixel\Events\ViewContent;
+use NAttreid\FacebookPixel\Hooks\FacebookPixelConfig;
 use Nette\Application\UI\Control;
 use Nette\Http\IRequest;
+use Nette\InvalidArgumentException;
 
 /**
  * Class FacebookPixelClient
@@ -25,25 +30,25 @@ use Nette\Http\IRequest;
 class FacebookPixel extends Control
 {
 
-	/** @var string[] */
-	private $pixelId;
+	/** @var FacebookPixelConfig[] */
+	private $config;
 
-	/** @var string[][] */
+	/** @var Event[] */
 	private $events = [];
 
-	/** @var string[][] */
+	/** @var Event[] */
 	private $ajaxEvents = [];
 
 	/** @var IRequest */
 	private $request;
 
 	/** @var int|null */
-	private $pixelKey;
+	private $configKey;
 
-	public function __construct(array $pixelId, IRequest $request)
+	public function __construct(array $config, IRequest $request)
 	{
 		parent::__construct();
-		$this->pixelId = $pixelId;
+		$this->config = $config;
 		$this->request = $request;
 	}
 
@@ -138,10 +143,10 @@ class FacebookPixel extends Control
 	 */
 	public function usePixelId(int $key): void
 	{
-		if (!isset($this->pixelId[$key])) {
+		if (!isset($this->config[$key])) {
 			throw new InvalidArgumentException();
 		}
-		$this->pixelKey = $key;
+		$this->configKey = $key;
 	}
 
 	/**
@@ -153,12 +158,12 @@ class FacebookPixel extends Control
 		return $this->events[] = new CompleteRegistration();
 	}
 
-	private function getPixels(): array
+	private function getConfig(): array
 	{
-		if ($this->pixelKey) {
-			return [$this->pixelId[$this->pixelKey]];
+		if ($this->configKey) {
+			return [$this->config[$this->configKey]];
 		} else {
-			return $this->pixelId;
+			return $this->config;
 		}
 	}
 
@@ -167,7 +172,8 @@ class FacebookPixel extends Control
 		if ($this->request->isAjax()) {
 			$this->renderAjax();
 		} else {
-			$this->template->pixelId = $this->getPixels();
+			$this->template->config = $this->getConfig();
+			$this->processEvents($this->events);
 			$this->template->events = $this->events;
 			$this->template->setFile(__DIR__ . '/templates/default.latte');
 			$this->template->render();
@@ -176,10 +182,34 @@ class FacebookPixel extends Control
 
 	public function renderAjax(): void
 	{
-		$this->template->pixelId = $this->getPixels();
-		$this->template->ajaxEvents = $this->ajaxEvents;
+		$this->template->config = $this->getConfig();
+		$this->processEvents($this->ajaxEvents);
+		$this->template->events = $this->ajaxEvents;
 		$this->template->setFile(__DIR__ . '/templates/ajax.latte');
 		$this->template->render();
+	}
+
+	/**
+	 * @param Event[] $events
+	 */
+	private function processEvents(array $events): void
+	{
+		foreach ($this->getConfig() as $config) {
+
+			$api = Api::init(null, null, $config->accessToken);
+			$api->setLogger(new CurlLogger());
+
+			if (!empty($events)) {
+				$arr = [];
+				foreach ($events as $row) {
+					$arr[] = $row->getEvent();
+				}
+
+				$request = (new EventRequest($config->pixelId))
+					->setEvents($arr);
+				$request->execute();
+			}
+		}
 	}
 }
 

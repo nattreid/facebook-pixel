@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace NAttreid\FacebookPixel\Events\Abstracts;
 
+use FacebookAds\Object\ServerSide\Content;
+use FacebookAds\Object\ServerSide\CustomData;
+use FacebookAds\Object\ServerSide\DeliveryCategory;
+use FacebookAds\Object\ServerSide\Event as ServerEvent;
 use stdClass;
 
 /**
@@ -19,7 +23,7 @@ abstract class ContentEvent extends Event
 	 * @param string $id
 	 * @return static
 	 */
-	public function addId(string $id)
+	public function addId(string $id): self
 	{
 		if (!isset($this->values['content_ids'])) {
 			$this->values['content_ids'] = [];
@@ -35,7 +39,7 @@ abstract class ContentEvent extends Event
 	 * @param int $quantity
 	 * @return static
 	 */
-	public function addContent(string $id, float $itemPrice, int $quantity)
+	public function addContent(string $id, float $itemPrice, int $quantity): self
 	{
 		if (!isset($this->values['contents'])) {
 			$this->values['contents'] = [];
@@ -47,5 +51,27 @@ abstract class ContentEvent extends Event
 
 		$this->values['contents'][] = $obj;
 		return $this;
+	}
+
+	public function getEvent(): ServerEvent
+	{
+		$event = parent::getEvent();
+
+		$contents = [];
+		if (isset($this->values['contents'])) {
+			foreach ($this->values['contents'] as $row) {
+				$content = (new Content())
+					->setProductId($row->id)
+					->setQuantity($row->quantity)
+					->setItemPrice($row->item_price)
+					->setDeliveryCategory(DeliveryCategory::HOME_DELIVERY);
+				$contents[] = $content;
+			}
+		}
+		/* @var $customData CustomData */
+		$customData = $event->getCustomData();
+		$customData->setContents($contents);
+
+		return $event;
 	}
 }

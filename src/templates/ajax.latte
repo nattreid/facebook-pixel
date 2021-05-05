@@ -1,11 +1,20 @@
 {snippet ajaxEvents}
 	<script>
-		{foreach $ajaxEvents as $event}
+		{foreach $events as $event}
 			fbq('track', {$event->name}, {
 				{foreach $event->items as $variable => $value}
 					{$variable|noescape}: {$value},
 				{/foreach}
+			}, {
+				eventID: {$event->eventId}
 			});
 		{/foreach}
 	</script>
+	{foreach $config as $row}
+		<noscript>
+			{foreach $events as $event}
+				<img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id={$row->pixelId|noescape}&ev={$event->name}&eid={$event->eventId}&noscript=1"/>
+			{/foreach}
+		</noscript>
+	{/foreach}
 {/snippet}

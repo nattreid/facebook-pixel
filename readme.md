@@ -6,11 +6,9 @@ extensions:
     facebookPixel: NAtrreid\FacebookPixel\DI\FacebookPixelExtension
 
 facebookPixel:
-    pixelId: 'XXXXXXXXXXXXXXX'
-    # nebo vice
-    pixelId: 
-        - 'XXXXXXXXXXXXXXX'
-        - 'XXXXXXXXXXXXXXX'
+	credentials:
+		- [pixelId, accessToken]
+		- [pixelId, accessToken]
 ```
 
 Použití

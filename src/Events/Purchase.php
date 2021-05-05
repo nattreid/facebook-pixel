@@ -23,7 +23,7 @@ class Purchase extends ViewContent
 		return $this;
 	}
 
-	protected function check()
+	protected function check(): void
 	{
 		if (!isset($this->values['value']) || !isset($this->values['currency'])) {
 			throw new InvalidStateException("'Value' and 'Currency' must be set");

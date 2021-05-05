@@ -31,16 +31,19 @@ class FacebookPixelHook extends HookFactory
 	{
 		$form = $this->formFactory->create();
 
-		$pixels = $form->addDynamic('pixelsId', function (Container $container) {
-			$container->addText('pixelId', 'webManager.web.hooks.facebookPixel.pixelId');
+		$pixels = $form->addDynamic('facebookPixel', function (Container $container) {
+			$container->addText('pixelId', 'webManager.web.hooks.facebookPixel.pixelId')
+				->setRequired();
+			$container->addText('accessToken', 'webManager.web.hooks.facebookPixel.accessToken')
+				->setRequired();
 			$container->addSubmit('remove', 'default.delete')
 				->setValidationScope(FALSE)
-				->onClick[] = [$this, 'removePixel'];
+				->onClick[] = [$this, 'removeFacebookPixel'];
 		});
 
 		$pixels->addSubmit('add', 'default.add')
 			->setValidationScope(FALSE)
-			->onClick[] = [$this, 'addPixel'];
+			->onClick[] = [$this, 'addFacebookPixel'];
 
 		$this->setDefaults($form);
 
@@ -53,25 +56,29 @@ class FacebookPixelHook extends HookFactory
 	public function facebookPixelFormSucceeded(SubmitButton $button): void
 	{
 		$arr = [];
-		foreach ($button->form['pixelsId']->values as $values) {
-			$arr[] = $values->pixelId;
+		$counter = 1;
+		foreach ($button->form['facebookPixel']->values as $values) {
+			$config = new FacebookPixelConfig();
+			$config->pixelId = $values->pixelId;
+			$config->accessToken = $values->accessToken;
+			$arr[$counter++] = $config;
 		}
-		$this->configurator->facebookPixelId = $arr;
+		$this->configurator->facebookPixel = $arr;
 
 		$this->flashNotifier->success('default.dataSaved');
 	}
 
-	public function removePixel(SubmitButton $button): void
+	public function removeFacebookPixel(SubmitButton $button): void
 	{
 		$id = $button->parent->name;
-		$arr = $this->configurator->facebookPixelId;
+		$arr = $this->configurator->facebookPixel;
 		unset($arr[$id]);
-		$this->configurator->facebookPixelId = $arr;
+		$this->configurator->facebookPixel = $arr;
 
 		$this->onDataChange();
 	}
 
-	public function addPixel(SubmitButton $button): void
+	public function addFacebookPixel(SubmitButton $button): void
 	{
 		/* @var $pixelsId \Kdyby\Replicator\Container */
 		$pixelsId = $button->parent;
@@ -83,10 +90,11 @@ class FacebookPixelHook extends HookFactory
 
 	private function setDefaults(Form $form): void
 	{
-		if ($this->configurator->facebookPixelId) {
-			foreach ($this->configurator->facebookPixelId as $key => $id) {
-				$form['pixelsId'][$key]->setDefaults([
-					'pixelId' => $id
+		if ($this->configurator->facebookPixel) {
+			foreach ($this->configurator->facebookPixel as $key => $config) {
+				$form['facebookPixel'][$key]->setDefaults([
+					'pixelId' => $config->pixelId,
+					'accessToken' => $config->accessToken,
 				]);
 			}
 		}

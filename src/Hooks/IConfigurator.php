@@ -7,7 +7,7 @@ namespace NAttreid\FacebookPixel\Hooks;
 /**
  * Interface IConfigurator
  *
- * @property string[] $facebookPixelId
+ * @property FacebookPixelConfig[] $facebookPixel
  *
  * @author Attreid <attreid@gmail.com>
  */

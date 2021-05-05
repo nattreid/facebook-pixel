@@ -7,6 +7,7 @@ namespace NAttreid\FacebookPixel\DI;
 use NAttreid\Cms\Configurator\Configurator;
 use NAttreid\Cms\DI\ExtensionTranslatorTrait;
 use NAttreid\FacebookPixel\FacebookPixel;
+use NAttreid\FacebookPixel\Hooks\FacebookPixelConfig;
 use NAttreid\FacebookPixel\Hooks\FacebookPixelHook;
 use NAttreid\FacebookPixel\IFacebookPixelFactory;
 use NAttreid\WebManager\Services\Hooks\HookService;
@@ -22,7 +23,7 @@ use Nette\InvalidStateException;
 abstract class AbstractFacebookPixelExtension extends CompilerExtension
 {
 	private $defaults = [
-		'pixelId' => null
+		'credentials' => []
 	];
 
 	public function loadConfiguration(): void
@@ -30,25 +31,35 @@ abstract class AbstractFacebookPixelExtension extends CompilerExtension
 		$builder = $this->getContainerBuilder();
 		$config = $this->validateConfig($this->defaults, $this->getConfig());
 
-		$pixelId = $config['pixelId'];
-		if ($pixelId !== null && !is_array($pixelId)) {
-			$pixelId = [$pixelId];
+		$credentials = $config['credentials'];
+		$configs = [];
+		foreach ($credentials as $credential) {
+			if (!isset($credential[0])) {
+				throw new InvalidStateException("FacebookPixel: 'credentials' first (pixelId) does not set in config.neon");
+			}
+			if (!isset($credential[1])) {
+				throw new InvalidStateException("FacebookPixel: 'credentials' second (accessToken) does not set in config.neon");
+			}
+
+			$config = new FacebookPixelConfig();
+			$config->pixelId = $credential[0];
+			$config->accessToken = $credential[1];
 		}
 
-		$pixelId = $this->prepareConfig($pixelId);
+		$configs = $this->prepareConfig($configs);
 
-		if ($pixelId === null) {
-			throw new InvalidStateException("FacebookPixel: 'pixelId' does not set in config.neon");
+		if ($configs === null) {
+			throw new InvalidStateException("FacebookPixel: 'credentials' does not set in config.neon");
 		}
 
 		$builder->addDefinition($this->prefix('factory'))
 			->setImplement(IFacebookPixelFactory::class)
 			->setFactory(FacebookPixel::class)
-			->setArguments([$pixelId]);
+			->setArguments([$configs]);
 	}
 
-	protected function prepareConfig($pixelId)
+	protected function prepareConfig(array $configs)
 	{
-		return $pixelId;
+		return $configs;
 	}
 }
