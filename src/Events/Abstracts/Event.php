@@ -94,7 +94,7 @@ abstract class Event
 			$customData->setValue($this->values['value']);
 		}
 		if (isset($this->values['currency'])) {
-			$customData->setValue($this->values['currency']);
+			$customData->setCurrency($this->values['currency']);
 		}
 
 		$event->setCustomData($customData);
