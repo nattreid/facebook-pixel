@@ -133,7 +133,11 @@ class FacebookPixel extends Control
 	 */
 	public function getPixelList(): array
 	{
-		return $this->pixelId;
+		$arr = [];
+		foreach ($this->config as $key => $row) {
+			$arr[$key + 1] = $row->pixelId;
+		}
+		return $arr;
 	}
 
 	/**
@@ -143,6 +147,7 @@ class FacebookPixel extends Control
 	 */
 	public function usePixelId(int $key): void
 	{
+		$key--;
 		if (!isset($this->config[$key])) {
 			throw new InvalidArgumentException();
 		}
