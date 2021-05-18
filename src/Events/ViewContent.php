@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace NAttreid\FacebookPixel\Events;
 
 use NAttreid\FacebookPixel\Events\Abstracts\ContentEvent;
+use Nette\Http\IRequest;
 
 /**
  * Class ViewContent
@@ -13,8 +14,9 @@ use NAttreid\FacebookPixel\Events\Abstracts\ContentEvent;
  */
 class ViewContent extends ContentEvent
 {
-	public function __construct()
+	public function __construct(IRequest $request)
 	{
+		parent::__construct($request);
 		$this->values['content_type'] = 'product';
 	}
 

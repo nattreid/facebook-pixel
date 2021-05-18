@@ -58,7 +58,7 @@ class FacebookPixel extends Control
 	 */
 	public function search(): Search
 	{
-		return $this->events[] = new Search();
+		return $this->events[] = new Search($this->request);
 	}
 
 	/**
@@ -67,7 +67,7 @@ class FacebookPixel extends Control
 	 */
 	public function viewContent(): ViewContent
 	{
-		return $this->events[] = new ViewContent();
+		return $this->events[] = new ViewContent($this->request);
 	}
 
 	/**
@@ -77,7 +77,7 @@ class FacebookPixel extends Control
 	public function addToCart(): AddToCart
 	{
 		$this->redrawControl('ajaxEvents');
-		return $this->ajaxEvents[] = new AddToCart();
+		return $this->ajaxEvents[] = new AddToCart($this->request);
 	}
 
 	/**
@@ -87,7 +87,7 @@ class FacebookPixel extends Control
 	public function addToWishList(): AddToWishlist
 	{
 		$this->redrawControl('ajaxEvents');
-		return $this->ajaxEvents[] = new AddToWishlist();
+		return $this->ajaxEvents[] = new AddToWishlist($this->request);
 	}
 
 	/**
@@ -96,7 +96,7 @@ class FacebookPixel extends Control
 	 */
 	public function initiateCheckout(): InitiateCheckout
 	{
-		return $this->events[] = new InitiateCheckout();
+		return $this->events[] = new InitiateCheckout($this->request);
 	}
 
 	/**
@@ -105,7 +105,7 @@ class FacebookPixel extends Control
 	 */
 	public function addPaymentInfo(): AddPaymentInfo
 	{
-		return $this->events[] = new AddPaymentInfo();
+		return $this->events[] = new AddPaymentInfo($this->request);
 	}
 
 	/**
@@ -115,7 +115,7 @@ class FacebookPixel extends Control
 	public function purchase(): Purchase
 	{
 		$this->redrawControl('ajaxEvents');
-		return $this->ajaxEvents[] = new Purchase();
+		return $this->ajaxEvents[] = new Purchase($this->request);
 	}
 
 	/**
@@ -124,7 +124,7 @@ class FacebookPixel extends Control
 	 */
 	public function lead(): Lead
 	{
-		return $this->events[] = new Lead();
+		return $this->events[] = new Lead($this->request);
 	}
 
 	/**

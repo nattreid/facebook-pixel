@@ -8,6 +8,7 @@ use FacebookAds\Object\ServerSide\ActionSource;
 use FacebookAds\Object\ServerSide\CustomData;
 use FacebookAds\Object\ServerSide\Event as ServerEvent;
 use FacebookAds\Object\ServerSide\UserData;
+use Nette\Http\IRequest;
 use Nette\SmartObject;
 use Nette\Utils\Random;
 use ReflectionClass;
@@ -30,6 +31,14 @@ abstract class Event
 
 	/** @var string */
 	private $eventId;
+
+	/** @var IRequest */
+	private $request;
+
+	public function __construct(IRequest $request)
+	{
+		$this->request = $request;
+	}
 
 	/**
 	 * Set Value
@@ -87,6 +96,7 @@ abstract class Event
 			->setEventTime(time())
 			->setEventId($this->getEventId())
 			->setUserData($userData)
+			->setEventSourceUrl($this->request->getUrl()->getAbsoluteUrl())
 			->setActionSource(ActionSource::WEBSITE);
 
 		$customData = new CustomData();
