@@ -160,7 +160,7 @@ class FacebookPixel extends Control
 	 */
 	public function completeRegistration(): CompleteRegistration
 	{
-		return $this->events[] = new CompleteRegistration();
+		return $this->events[] = new CompleteRegistration($this->request);
 	}
 
 	private function getConfig(): array
