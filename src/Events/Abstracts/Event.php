@@ -52,6 +52,61 @@ abstract class Event
 	}
 
 	/**
+	 * Set ExternalId
+	 * @param string $value
+	 * @return static
+	 */
+	public function setExternalId(string $value): self
+	{
+		$this->values['external_id'] = $value;
+		return $this;
+	}
+
+	/**
+	 * Set country
+	 * @param string $value
+	 * @return static
+	 */
+	public function setCountry(string $value): self
+	{
+		$this->values['country'] = $value;
+		return $this;
+	}
+
+	/**
+	 * Set email
+	 * @param string $value
+	 * @return static
+	 */
+	public function setEmail(string $value): self
+	{
+		$this->values['em'] = $value;
+		return $this;
+	}
+
+	/**
+	 * Set first name
+	 * @param string $value
+	 * @return static
+	 */
+	public function setFirstName(string $value): self
+	{
+		$this->values['fn'] = $value;
+		return $this;
+	}
+
+	/**
+	 * Set last name
+	 * @param string $value
+	 * @return static
+	 */
+	public function setLastName(string $value): self
+	{
+		$this->values['ln'] = $value;
+		return $this;
+	}
+
+	/**
 	 * Set Currency
 	 * @param string $currency
 	 * @return static
@@ -87,15 +142,11 @@ abstract class Event
 
 	public function getEvent(): ServerEvent
 	{
-		$userData = (new UserData())
-			->setClientIpAddress($_SERVER['REMOTE_ADDR'])
-			->setClientUserAgent($_SERVER['HTTP_USER_AGENT']);
 
 		$event = (new ServerEvent())
 			->setEventName($this->name)
 			->setEventTime(time())
 			->setEventId($this->getEventId())
-			->setUserData($userData)
 			->setEventSourceUrl($this->request->getUrl()->getAbsoluteUrl())
 			->setActionSource(ActionSource::WEBSITE);
 
@@ -106,8 +157,28 @@ abstract class Event
 		if (isset($this->values['currency'])) {
 			$customData->setCurrency($this->values['currency']);
 		}
-
 		$event->setCustomData($customData);
+
+
+		$userData = (new UserData())
+			->setClientIpAddress($_SERVER['REMOTE_ADDR'])
+			->setClientUserAgent($_SERVER['HTTP_USER_AGENT']);
+		if (isset($this->values['external_id'])) {
+			$userData->setExternalId($this->values['external_id']);
+		}
+		if (isset($this->values['country'])) {
+			$userData->setCountryCode($this->values['country']);
+		}
+		if (isset($this->values['em'])) {
+			$userData->setEmail($this->values['em']);
+		}
+		if (isset($this->values['fn'])) {
+			$userData->setFirstName($this->values['fn']);
+		}
+		if (isset($this->values['ln'])) {
+			$userData->setLastName($this->values['ln']);
+		}
+		$event->setUserData($userData);
 
 		return $event;
 	}
