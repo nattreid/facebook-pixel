@@ -58,7 +58,7 @@ abstract class Event
 	 */
 	public function setExternalId(string $value): self
 	{
-		$this->values['external_id'] = $value;
+		$this->values['extern_id'] = $value;
 		return $this;
 	}
 
@@ -163,8 +163,8 @@ abstract class Event
 		$userData = (new UserData())
 			->setClientIpAddress($_SERVER['REMOTE_ADDR'])
 			->setClientUserAgent($_SERVER['HTTP_USER_AGENT']);
-		if (isset($this->values['external_id'])) {
-			$userData->setExternalId($this->values['external_id']);
+		if (isset($this->values['extern_id'])) {
+			$userData->setExternalId($this->values['extern_id']);
 		}
 		if (isset($this->values['country'])) {
 			$userData->setCountryCode($this->values['country']);
