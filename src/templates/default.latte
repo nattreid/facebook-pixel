@@ -6,7 +6,9 @@
         t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
         document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
     {foreach $config as $row}
-        fbq('init', {$row->pixelId});
+        fbq('init', {$row->pixelId}, {
+            'extern_id': {$externId}
+        });
     {/foreach}
     fbq('track', 'PageView');
     {foreach $events as $event}

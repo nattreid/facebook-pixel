@@ -45,6 +45,9 @@ class FacebookPixel extends Control
 	/** @var int|null */
 	private $configKey;
 
+	/** @var string|null */
+	private $externId;
+
 	public function __construct(array $config, IRequest $request)
 	{
 		parent::__construct();
@@ -53,12 +56,23 @@ class FacebookPixel extends Control
 	}
 
 	/**
+	 * Set ExternalId
+	 * @param string $value
+	 * @return static
+	 */
+	public function setExternalId(string $value): self
+	{
+		$this->externId = $value;
+		return $this;
+	}
+
+	/**
 	 * Search event
 	 * @return Search
 	 */
 	public function search(): Search
 	{
-		return $this->events[] = new Search($this->request);
+		return $this->events[] = new Search($this->request, $this->externId);
 	}
 
 	/**
@@ -67,7 +81,7 @@ class FacebookPixel extends Control
 	 */
 	public function viewContent(): ViewContent
 	{
-		return $this->events[] = new ViewContent($this->request);
+		return $this->events[] = new ViewContent($this->request, $this->externId);
 	}
 
 	/**
@@ -77,7 +91,7 @@ class FacebookPixel extends Control
 	public function addToCart(): AddToCart
 	{
 		$this->redrawControl('ajaxEvents');
-		return $this->ajaxEvents[] = new AddToCart($this->request);
+		return $this->ajaxEvents[] = new AddToCart($this->request, $this->externId);
 	}
 
 	/**
@@ -87,7 +101,7 @@ class FacebookPixel extends Control
 	public function addToWishList(): AddToWishlist
 	{
 		$this->redrawControl('ajaxEvents');
-		return $this->ajaxEvents[] = new AddToWishlist($this->request);
+		return $this->ajaxEvents[] = new AddToWishlist($this->request, $this->externId);
 	}
 
 	/**
@@ -96,7 +110,7 @@ class FacebookPixel extends Control
 	 */
 	public function initiateCheckout(): InitiateCheckout
 	{
-		return $this->events[] = new InitiateCheckout($this->request);
+		return $this->events[] = new InitiateCheckout($this->request, $this->externId);
 	}
 
 	/**
@@ -105,7 +119,7 @@ class FacebookPixel extends Control
 	 */
 	public function addPaymentInfo(): AddPaymentInfo
 	{
-		return $this->events[] = new AddPaymentInfo($this->request);
+		return $this->events[] = new AddPaymentInfo($this->request, $this->externId);
 	}
 
 	/**
@@ -115,7 +129,7 @@ class FacebookPixel extends Control
 	public function purchase(): Purchase
 	{
 		$this->redrawControl('ajaxEvents');
-		return $this->ajaxEvents[] = new Purchase($this->request);
+		return $this->ajaxEvents[] = new Purchase($this->request, $this->externId);
 	}
 
 	/**
@@ -124,7 +138,16 @@ class FacebookPixel extends Control
 	 */
 	public function lead(): Lead
 	{
-		return $this->events[] = new Lead($this->request);
+		return $this->events[] = new Lead($this->request, $this->externId);
+	}
+
+	/**
+	 * Complete Registration event (customer)
+	 * @return CompleteRegistration
+	 */
+	public function completeRegistration(): CompleteRegistration
+	{
+		return $this->events[] = new CompleteRegistration($this->request, $this->externId);
 	}
 
 	/**
@@ -154,15 +177,6 @@ class FacebookPixel extends Control
 		$this->configKey = $key;
 	}
 
-	/**
-	 * Complete Registration event (customer)
-	 * @return CompleteRegistration
-	 */
-	public function completeRegistration(): CompleteRegistration
-	{
-		return $this->events[] = new CompleteRegistration($this->request);
-	}
-
 	private function getConfig(): array
 	{
 		if ($this->configKey) {
@@ -178,6 +192,7 @@ class FacebookPixel extends Control
 			$this->renderAjax();
 		} else {
 			$this->template->config = $this->getConfig();
+			$this->template->externId = $this->externId;
 			$this->processEvents($this->events);
 			$this->template->events = $this->events;
 			$this->template->setFile(__DIR__ . '/templates/default.latte');

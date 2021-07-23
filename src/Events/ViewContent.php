@@ -14,9 +14,9 @@ use Nette\Http\IRequest;
  */
 class ViewContent extends ContentEvent
 {
-	public function __construct(IRequest $request)
+	public function __construct(IRequest $request, ?string $externId)
 	{
-		parent::__construct($request);
+		parent::__construct($request, $externId);
 		$this->values['content_type'] = 'product';
 	}
 
